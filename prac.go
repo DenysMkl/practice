@@ -2,19 +2,45 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"io/ioutil"
+	"net/http"
+	"strconv"
+	"sync"
 )
 
-func main(){
+func main() {
+
+	var urls []string = []string{}
+	for i:= 1; i <=100; i++{
+		urls = append(urls, "https://jsonplaceholder.typicode.com/posts/"+strconv.Itoa(i))	
+	}
 	
-	resp, err := http.Get("https://jsonplaceholder.typicode.com/posts")
+	var wg sync.WaitGroup
+
+	for _, url := range urls{
+		wg.Add(1)
+		go func (url string)  {
+			Get_data(url)	
+			wg.Done()		
+		}(url)
+	}
+	wg.Wait()
+
+}
+
+
+func Get_data(link string) {
+	
+	content, err := http.Get(link)
 	if err != nil{
 		fmt.Println("Error")
 	}
-	body, err := ioutil.ReadAll(resp.Body)
-	sb := string(body)
-	fmt.Println(sb)
-	
-}
+	data, err := ioutil.ReadAll(content.Body)
+	if err != nil{
+		fmt.Println("Error")
+	}
+	defer content.Body.Close()
 
+	fmt.Println(string(data))
+
+}
