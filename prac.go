@@ -22,10 +22,11 @@ func main() {
 			channel <- Get_data(url)
 
 		}(url, channel)
+		for i := range channel{
+			fmt.Println(i)
+		}
 	}
-	for i := range channel{
-		fmt.Println(i)
-	}
+	
 
 }
 
