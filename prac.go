@@ -15,18 +15,18 @@ func main() {
 	}
 	channel := make(chan string)
 	
-
+	
 	for _, url := range urls{
 		
 		go func (url string, channel chan string)  {
 			channel <- Get_data(url)
 
 		}(url, channel)
-		for i := range channel{
-			fmt.Println(i)
-		}
+
 	}
-	
+	for i := range channel{
+		fmt.Println(i)
+	}	
 
 }
 
